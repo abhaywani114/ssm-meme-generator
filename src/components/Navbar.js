@@ -10,7 +10,6 @@ export default function Navbar() {
 				<span>SSM MemeGenerator</span>
 			</div>
 			<div className="nav-bar--right-text">
-				<a target="_blank" href="https://abhaywani114.github.io">By: Abrar Ajaz</a>
 			</div>
 		</nav>
 	)
