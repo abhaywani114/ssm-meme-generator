@@ -175,3 +175,10 @@ main {
 .font-slide > input {
 	width: 65%;
 }
+
+@media screen and (min-width:500px) {
+	main {
+		width:600px;
+		margin: auto;
+	}
+}
