@@ -1,5 +1,6 @@
 import React from 'react'
 import {toPng} from 'html-to-image'
+import DragText from '../plugins/DragText'
 
 export default function Meme() {
 	const [meme, setMeme] = React.useState({
@@ -53,100 +54,36 @@ export default function Meme() {
 				}).catch(err => console.log(err));
 	}
 
-	const [textStyle, setTextStyle] = React.useState({
-			text_1: {
-				top: 0,
-				left:0,
-				right: 0,
-			},
-			text_2: {
-				bottom:0,
-				left:0,
-				right:0,
-			}
+	const [posText1, setPosText1] = React.useState({
+			transform: `translate3d(0px, 0px, 0px)`
 	});
 
+	const [posText2, setPosText2] = React.useState({
+			transform: `translate3d(0px, 0px, 0px)`
+	});
+
+
 	React.useEffect( () => {
-		var currentX;
-		var currentY;
-		var initialX;
-		var initialY;
-		var xOffset = 0;
-		var yOffset = 0;
+		const memeTextDrag_1 = new DragText("#text_1", function(x, y) { 
+				setPosText1({ transform: `translate3d(${x}px, ${y}px, 0px)`});
+		});
 
-		function dragStart(e) {
-			  if (e.type === "touchstart") {
-				initialX = e.touches[0].clientX - xOffset;
-				initialY = e.touches[0].clientY - yOffset;
-			  } else {
-				initialX = e.clientX - xOffset;
-				initialY = e.clientY - yOffset;
-			  }			
-		} 
+		const memeTextDrag_2 = new DragText("#text_2", function(x, y) { 
+				setPosText2({ transform: `translate3d(${x}px, ${y}px, 0px)`});
+		});
 
-		 function dragEnd(e) {
-		  	initialX = currentX;
-		 	initialY = currentY;
-			drag(e);
-		}
-		
-		function drag(e) {
-			e.preventDefault();
-			if (e.type === "touchmove") {
-			  currentX = e.touches[0].clientX - initialX;
-			  currentY = e.touches[0].clientY - initialY;
-			} else {
-			  currentX = e.clientX - initialX;
-			  currentY = e.clientY - initialY;
-			}
-
-			xOffset = currentX;
-			yOffset = currentY;
-	
-			console.log({currentX, currentY});
-			setTextStyle(prevState => {
-				return {
-					...prevState,
-					[e.target.id]: {
-						fontSize: prevState[e.target.id].fontSize,
-						top: currentY,
-						left: currentX
-					}
-				}
-			});
-
-		}
-
-		function addDragEvents(container) {
-			container.addEventListener("touchstart", dragStart, false);
-			container.addEventListener("touchmove", drag, false);
-
-			container.addEventListener("dragstart", dragStart, false);
-			container.addEventListener("dragend", drag, false);
-		}
-		addDragEvents(document.getElementById("text_1"));
-		addDragEvents(document.getElementById("text_2"));
 
 		return () => {
+				memeTextDrag_1.cleanDragText();
+				memeTextDrag_2.cleanDragText();
 		}
 
 	}, []);
 	
+	const [textFont, setTextFont] = React.useState({fontSize:'16px'});
 	function changeFontSize(e) {
-		const new_val = e.target.value;
-		setTextStyle(prevState => {
-			return {
-				...prevState,
-				text_1: {
-					...prevState.text_1,
-					fontSize: new_val + "px"
-				},
-				text_2: {
-					...prevState.text_2,
-					fontSize:new_val+"px"
-				}
-			}
-		});			
+		const new_val = e.target.value + 'px';
+		setTextFont({fontSize: new_val});			
 	}
 
 	return (
@@ -170,7 +107,7 @@ export default function Meme() {
 				</div>
 				<div className="font-slide">
 					  <label htmlFor="font_size">Font Size:</label>
-					  <input type="range" id="font_size" name="size" min="1" max="100"
+					  <input type="range" id="font_size" name="size" min="1" max="100" defaultValue={parseInt(textFont.fontSize)}
 						onChange={changeFontSize} />
 				</div>
 				<div className="form-submit">
@@ -184,13 +121,13 @@ export default function Meme() {
 					draggable="true" 
 					className="meme-image--text" 
 					id="text_1"
-					style={textStyle.text_1}>{meme.topText}</span>
+					style={{...posText1, ...textFont}}>{meme.topText}</span>
 
                 <span 
 					draggable="true" 
 					className="meme-image--text" 
 					id="text_2"
-					style={textStyle.text_2}>{meme.bottomText}</span>
+					style={{...posText2, ...textFont, bottom:0}}>{meme.bottomText}</span>
 			</div>
 			{ meme.randomImage != "" && <div>
 				<br/>
