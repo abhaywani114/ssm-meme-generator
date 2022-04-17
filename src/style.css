@@ -80,7 +80,7 @@ main {
 	margin-top: 10px;
 }
 
-.form-submit > button {
+.form-submit > button, .download-btn {
 	background: linear-gradient(90.41deg, #711F8D 1.14%, #A818DA 100%);
 	border-radius: 10px;
     border: 1px solid #ccc;
@@ -99,6 +99,7 @@ main {
 
 .meme-image {
 	position: relative;
+	z-index:-1;
 }
 
 .meme-image> img {
@@ -115,7 +116,7 @@ main {
     margin: 15px 0;
     padding: 0 5px;
     font-family: impact, sans-serif;
-    font-size: 1.4em;
+    font-size: 1em;
     text-transform: uppercase;
     color: white;
     letter-spacing: 1px;
