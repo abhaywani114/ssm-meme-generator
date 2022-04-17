@@ -15,7 +15,7 @@ html, body {
 	align-items:center;
     justify-content: space-around;
 	padding: 21px 10px;
-
+	z-index: 1000;
 
     position: fixed;
     top: 0;
@@ -35,7 +35,7 @@ html, body {
 
 .nav-bar--logo-container > span {
 	font-weight: 700;
-	font-size: 20.7482px;
+	font-size: 25px;
 	line-height: 24px;
 	letter-spacing: -0.1em;
 }
@@ -99,7 +99,6 @@ main {
 
 .meme-image {
 	position: relative;
-	z-index:-1;
 }
 
 .meme-image> img {
@@ -109,10 +108,8 @@ main {
 
 .meme-image--text {
     position: absolute;
-    width: 80%;
     text-align: center;
     left: 50%;
-    transform: translateX(-50%);
     margin: 15px 0;
     padding: 0 5px;
     font-family: impact, sans-serif;
@@ -147,6 +144,7 @@ main {
     background: #fff;
     width: 100%;
     padding: 5px;
+	left: 0;
 }
 
 .fotter-sign > a {
@@ -163,4 +161,15 @@ main {
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 1.3px;
+}
+
+.font-slide {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+	font-size: 0.9rem;
+	padding: 10px 7px;
+}
+.font-slide > input {
+	width: 65%;
 }

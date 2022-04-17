@@ -10,6 +10,7 @@ export default function Navbar() {
 				<span>SSM MemeGenerator</span>
 			</div>
 			<div className="nav-bar--right-text">
+				<span>IIT Certified</span>
 			</div>
 		</nav>
 	)

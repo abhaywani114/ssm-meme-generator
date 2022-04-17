@@ -47,10 +47,106 @@ export default function Meme() {
 		toPng(memeImageRef.current, { cacheBust: true})
 				.then( dataUrl => {
 					const link = document.createElement('a')
-					link.download = 'my-image-name.png'
+					link.download = `ssm-memegenerator-${Math.floor(Math.random() * 1000)}.png`
 					link.href = dataUrl
 					link.click();
 				}).catch(err => console.log(err));
+	}
+
+	const [textStyle, setTextStyle] = React.useState({
+			text_1: {
+				top: 0,
+				left:0,
+				right: 0,
+			},
+			text_2: {
+				bottom:0,
+				left:0,
+				right:0,
+			}
+	});
+
+	React.useEffect( () => {
+		var currentX;
+		var currentY;
+		var initialX;
+		var initialY;
+		var xOffset = 0;
+		var yOffset = 0;
+
+		function dragStart(e) {
+			  if (e.type === "touchstart") {
+				initialX = e.touches[0].clientX - xOffset;
+				initialY = e.touches[0].clientY - yOffset;
+			  } else {
+				initialX = e.clientX - xOffset;
+				initialY = e.clientY - yOffset;
+			  }			
+		} 
+
+		 function dragEnd(e) {
+		  	initialX = currentX;
+		 	initialY = currentY;
+			drag(e);
+		}
+		
+		function drag(e) {
+			e.preventDefault();
+			if (e.type === "touchmove") {
+			  currentX = e.touches[0].clientX - initialX;
+			  currentY = e.touches[0].clientY - initialY;
+			} else {
+			  currentX = e.clientX - initialX;
+			  currentY = e.clientY - initialY;
+			}
+
+			xOffset = currentX;
+			yOffset = currentY;
+	
+			console.log({currentX, currentY});
+			setTextStyle(prevState => {
+				return {
+					...prevState,
+					[e.target.id]: {
+						fontSize: prevState[e.target.id].fontSize,
+						top: currentY,
+						left: currentX
+					}
+				}
+			});
+
+		}
+
+		function addDragEvents(container) {
+			container.addEventListener("touchstart", dragStart, false);
+			container.addEventListener("touchmove", drag, false);
+
+			container.addEventListener("dragstart", dragStart, false);
+			container.addEventListener("dragend", drag, false);
+		}
+		addDragEvents(document.getElementById("text_1"));
+		addDragEvents(document.getElementById("text_2"));
+
+		return () => {
+		}
+
+	}, []);
+	
+	function changeFontSize(e) {
+		const new_val = e.target.value;
+		setTextStyle(prevState => {
+			return {
+				...prevState,
+				text_1: {
+					...prevState.text_1,
+					fontSize: new_val + "px"
+				},
+				text_2: {
+					...prevState.text_2,
+					fontSize:new_val+"px"
+				}
+			}
+		});			
 	}
 
 	return (
@@ -72,6 +168,11 @@ export default function Meme() {
 						value={meme.bottomText}
 					 />
 				</div>
+				<div className="font-slide">
+					  <label htmlFor="font_size">Font Size:</label>
+					  <input type="range" id="font_size" name="size" min="1" max="100"
+						onChange={changeFontSize} />
+				</div>
 				<div className="form-submit">
 					<button onClick={getRandomImage}>Get a new meme image</button>
 				</div>
@@ -79,8 +180,17 @@ export default function Meme() {
 
 			<div className="meme-image" ref={memeImageRef} >
 				<img src={meme.randomImage} />
-				<h2 className="meme-image--text top">{meme.topText}</h2>
-                <h2 className="meme-image--text bottom">{meme.bottomText}</h2>
+				<span 
+					draggable="true" 
+					className="meme-image--text" 
+					id="text_1"
+					style={textStyle.text_1}>{meme.topText}</span>
+
+                <span 
+					draggable="true" 
+					className="meme-image--text" 
+					id="text_2"
+					style={textStyle.text_2}>{meme.bottomText}</span>
 			</div>
 			{ meme.randomImage != "" && <div>
 				<br/>
